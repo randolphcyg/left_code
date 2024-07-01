@@ -6,6 +6,7 @@ import (
 	"sort/helper"
 )
 
+// 基数排序
 func radixSort(arr []int) []int {
 	if arr == nil || len(arr) < 2 {
 		return arr
@@ -14,15 +15,16 @@ func radixSort(arr []int) []int {
 	return arr
 }
 
+// 返回整数数组中最大整数的十进制位数
 func maxbits(arr []int) int {
-	max := math.MaxInt
+	maxInt := math.MaxInt
 	for i := 0; i < len(arr); i++ {
-		max = int(math.Max(float64(max), float64(arr[i])))
+		maxInt = int(math.Max(float64(maxInt), float64(arr[i])))
 	}
 	res := 0
-	for max != 0 {
+	for maxInt != 0 {
 		res++
-		max /= 10
+		maxInt /= 10
 	}
 	return res
 }

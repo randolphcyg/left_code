@@ -1,6 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"container/heap"
+	"fmt"
+)
+
+/*自定义图结构*/
 
 type Node struct {
 	Val   int
@@ -70,63 +75,67 @@ func createGraph(matrix [][]int) *Graph {
 	return graph
 }
 
-// Queue 定义一个队列结构体
-type Queue struct {
-	elements []*Node
+/*优先队列*/
+
+// PriorityQueue 实现优先队列
+type PriorityQueue []*Node
+
+func (pq *PriorityQueue) Len() int { return len(*pq) }
+
+func (pq *PriorityQueue) Less(i, j int) bool {
+	return (*pq)[i].Val < (*pq)[j].Val
 }
 
-// NewQueue 初始化并返回一个新的 Queue 实例
-func NewQueue() *Queue {
-	return &Queue{
-		elements: []*Node{},
-	}
+func (pq *PriorityQueue) Swap(i, j int) {
+	(*pq)[i], (*pq)[j] = (*pq)[j], (*pq)[i]
 }
 
-// Enqueue 将一个节点入队
-func (q *Queue) Enqueue(node *Node) {
-	q.elements = append(q.elements, node)
+func (pq *PriorityQueue) Push(x interface{}) {
+	*pq = append(*pq, x.(*Node))
 }
 
-// Dequeue 将一个节点出队并返回
-func (q *Queue) Dequeue() (*Node, bool) {
-	if q.IsEmpty() {
-		return nil, false
-	}
-	node := q.elements[0]
-	q.elements = q.elements[1:]
-	return node, true
+func (pq *PriorityQueue) Pop() interface{} {
+	old := *pq
+	n := len(old)
+	item := old[n-1]
+	*pq = old[0 : n-1]
+	return item
 }
 
-// IsEmpty 判断队列是否为空
-func (q *Queue) IsEmpty() bool {
-	return len(q.elements) == 0
+func NewPriorityQueue() *PriorityQueue {
+	pq := &PriorityQueue{}
+	heap.Init(pq)
+	return pq
 }
 
-// Size 返回队列的大小
-func (q *Queue) Size() int {
-	return len(q.elements)
+func (pq *PriorityQueue) IsEmpty() bool {
+	return pq.Len() == 0
 }
 
+// sortedTopology 拓扑排序
+// 1.选一个没有前驱的顶点并输出
+// 2.删除这个顶点及以它为起点的有向边
+// 3.重复12步骤直到DAG为空或不存在无前驱的顶点
 func sortedTopology(graph *Graph) []*Node {
 	// key:某个node value:剩余的入度
 	inMap := map[*Node]int{}
 	// 入度为0的点，才能进这个队列
-	zeroInQueue := NewQueue()
+	zeroInQueue := NewPriorityQueue()
 	for _, node := range graph.Nodes {
 		inMap[node] = node.In
 		if node.In == 0 {
-			zeroInQueue.Enqueue(node)
+			zeroInQueue.Push(node)
 		}
 	}
 	// 拓扑排序的结果，依次加入result
 	var result []*Node
 	for !zeroInQueue.IsEmpty() {
-		cur, _ := zeroInQueue.Dequeue()
+		cur := zeroInQueue.Pop().(*Node)
 		result = append(result, cur)
 		for _, next := range cur.Nexts {
 			inMap[next] = inMap[next] - 1
 			if inMap[next] == 0 {
-				zeroInQueue.Enqueue(next)
+				zeroInQueue.Push(next)
 			}
 		}
 	}

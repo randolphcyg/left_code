@@ -6,6 +6,8 @@ import (
 	"math"
 )
 
+/*自定义图结构*/
+
 type Node struct {
 	Val   int
 	In    int
@@ -50,6 +52,24 @@ func NewGraph() *Graph {
 	}
 }
 
+func createGraph(N int, links [][]int) *Graph {
+	graph := NewGraph()
+	for i := 1; i <= N; i++ {
+		graph.Nodes[i] = NewNode(i)
+	}
+	for _, link := range links {
+		from, to := link[0], link[1]
+		fromNode := graph.Nodes[from]
+		toNode := graph.Nodes[to]
+		edge := NewEdge(1, fromNode, toNode)
+		fromNode.Edges = append(fromNode.Edges, edge)
+		toNode.Edges = append(toNode.Edges, edge)
+	}
+	return graph
+}
+
+/*优先队列*/
+
 // PriorityQueue 实现优先队列
 type PriorityQueue []*Edge
 
@@ -85,23 +105,6 @@ func (pq *PriorityQueue) IsEmpty() bool {
 	return pq.Len() == 0
 }
 
-func createGraph(N int, links [][]int) *Graph {
-	graph := NewGraph()
-	for i := 1; i <= N; i++ {
-		graph.Nodes[i] = NewNode(i)
-	}
-	for _, link := range links {
-		from, to, weight := link[0], link[1], link[2]
-		fromNode := graph.Nodes[from]
-		toNode := graph.Nodes[to]
-		edge := NewEdge(weight, fromNode, toNode)
-		fromNode.Edges = append(fromNode.Edges, edge)
-		toNode.Edges = append(toNode.Edges, edge)
-		graph.Edges[edge] = struct{}{}
-	}
-	return graph
-}
-
 // Dijkstra 算法实现 函数计算从起始结点到所有其他结点的最短路径
 func dijkstra(graph *Graph, start *Node) map[*Node]int {
 	distanceMap := make(map[*Node]int)
@@ -114,12 +117,15 @@ func dijkstra(graph *Graph, start *Node) map[*Node]int {
 	pq.Push(NewEdge(0, start, start))
 
 	for !pq.IsEmpty() {
-		edge := pq.Pop().(*Edge)
+		edge, _ := pq.Pop().(*Edge)
 		node := edge.To
 		distance := edge.Weight
 
 		for _, e := range node.Edges {
 			toNode := e.To
+			if toNode == node {
+				toNode = e.From
+			}
 			newDist := distance + e.Weight
 			if newDist < distanceMap[toNode] {
 				distanceMap[toNode] = newDist
@@ -130,48 +136,55 @@ func dijkstra(graph *Graph, start *Node) map[*Node]int {
 	return distanceMap
 }
 
-// 计算最小传输时延
-func calculateMinDelay(distanceMap map[*Node]int, dstNode *Node) int {
-	if distanceMap[dstNode] == math.MaxInt64 {
-		return -1
+// 计算最迟响应时间
+func calculateMaxDistance(distanceMap map[*Node]int) int {
+	maxDistance := 0
+	for _, distance := range distanceMap {
+		if distance > maxDistance {
+			maxDistance = distance
+		}
 	}
-	return distanceMap[dstNode]
+	return maxDistance * 2
 }
 
 /*
 输入
-3 3
-1 2 11
-2 3 13
-1 3 50
-1 3
+5 7
+1 4
+2 1
+2 3
+2 4
+3 4
+3 5
+4 5
+2
 输出
-24
+4
 */
 func main() {
 	// 示例输入
-	var N, M int // 网络结点的个数N以及时延列表长度M
-	fmt.Scan(&N, &M)
-	links := make([][]int, M)
-	for i := 0; i < M; i++ {
-		links[i] = make([]int, 3)
-		fmt.Scan(&links[i][0], &links[i][1], &links[i][2])
+	var N, T int
+	fmt.Scan(&N, &T)
+	links := make([][]int, T)
+	for i := 0; i < T; i++ {
+		links[i] = make([]int, 2)
+		fmt.Scan(&links[i][0], &links[i][1])
 	}
-	var srcNodeIndex, dstNodeIndex int // 源结点和目的结点
-	fmt.Scan(&srcNodeIndex, &dstNodeIndex)
+	var startNodeIndex int
+	fmt.Scan(&startNodeIndex)
 
 	// 创建图
 	graph := createGraph(N, links)
 
-	// 获取起始节点和目标节点
-	srcNode, dstNode := graph.Nodes[srcNodeIndex], graph.Nodes[dstNodeIndex]
+	// 获取起始节点
+	startNode := graph.Nodes[startNodeIndex]
 
 	// 运行 Dijkstra 算法
-	result := dijkstra(graph, srcNode)
+	result := dijkstra(graph, startNode)
 
-	// 计算最小传输时延
-	minDelay := calculateMinDelay(result, dstNode)
+	// 计算最迟响应时间
+	maxDistance := calculateMaxDistance(result)
 
 	// 打印结果
-	fmt.Println(minDelay)
+	fmt.Println(maxDistance)
 }

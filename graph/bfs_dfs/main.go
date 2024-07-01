@@ -5,6 +5,8 @@ import (
 	"fmt"
 )
 
+/*自定义图结构*/
+
 type Node struct {
 	Val   int
 	In    int     // 入度
@@ -94,6 +96,8 @@ func bfs(node *Node) {
 		}
 	}
 }
+
+/*自定义栈*/
 
 type Stack struct {
 	elements []*Node

@@ -94,7 +94,7 @@ func (pq *PriorityQueue) IsEmpty() bool {
 	return pq.Len() == 0
 }
 
-// 优先队列 java底层就是小根堆
+// 优先队列 java/go底层就是小根堆
 func sortedArrDistanceLessK(arr []int, k int) []int {
 	if arr == nil || len(arr) < 2 {
 		return arr

@@ -6,6 +6,8 @@ import (
 	"math"
 )
 
+/*自定义图结构*/
+
 type Node struct {
 	Val   int
 	In    int     // 入度
@@ -82,6 +84,8 @@ func createGraph(matrix [][]int) *Graph {
 	return graph
 }
 
+/*优先队列*/
+
 // PriorityQueue 实现优先队列
 type PriorityQueue []*Edge
 
@@ -117,6 +121,8 @@ func (pq *PriorityQueue) IsEmpty() bool {
 	return pq.Len() == 0
 }
 
+/*我的集合们*/
+
 // MySets 我的集合们
 type MySets struct {
 	setMap map[*Node][]*Node
@@ -149,6 +155,7 @@ func (m *MySets) union(from, to *Node) {
 	}
 }
 
+// kruskal 算法实现
 func kruskal(graph *Graph) map[*Edge]struct{} {
 	var nodes []*Node
 	for _, node := range graph.Nodes {
@@ -171,6 +178,7 @@ func kruskal(graph *Graph) map[*Edge]struct{} {
 	return result
 }
 
+// prim 算法实现
 func prim(graph *Graph) map[*Edge]struct{} {
 	priorityQueue := NewPriorityQueue()
 	set := map[*Node]struct{}{}
@@ -200,6 +208,7 @@ func prim(graph *Graph) map[*Edge]struct{} {
 	return result
 }
 
+// dijkstra 算法实现
 func dijkstra(head *Node) map[*Node]int {
 	// 从head出发到所有点的最小距离
 	// key：从head出发到达key

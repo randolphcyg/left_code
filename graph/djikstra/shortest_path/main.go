@@ -6,6 +6,8 @@ import (
 	"math"
 )
 
+/*自定义图结构*/
+
 type Node struct {
 	Val   int
 	In    int
@@ -50,6 +52,25 @@ func NewGraph() *Graph {
 	}
 }
 
+func createGraph(N int, links [][]int) *Graph {
+	graph := NewGraph()
+	for i := 1; i <= N; i++ {
+		graph.Nodes[i] = NewNode(i)
+	}
+	for _, link := range links {
+		from, to, weight := link[1], link[2], link[3]
+		fromNode := graph.Nodes[from]
+		toNode := graph.Nodes[to]
+		edge := NewEdge(weight, fromNode, toNode)
+		fromNode.Edges = append(fromNode.Edges, edge)
+		fromNode.Nexts = append(fromNode.Nexts, toNode)
+		graph.Edges[edge] = struct{}{}
+	}
+	return graph
+}
+
+/*优先队列*/
+
 // PriorityQueue 实现优先队列
 type PriorityQueue []*Edge
 
@@ -83,23 +104,6 @@ func NewPriorityQueue() *PriorityQueue {
 
 func (pq *PriorityQueue) IsEmpty() bool {
 	return pq.Len() == 0
-}
-
-func createGraph(N int, links [][]int) *Graph {
-	graph := NewGraph()
-	for i := 1; i <= N; i++ {
-		graph.Nodes[i] = NewNode(i)
-	}
-	for _, link := range links {
-		from, to, weight := link[1], link[2], link[3]
-		fromNode := graph.Nodes[from]
-		toNode := graph.Nodes[to]
-		edge := NewEdge(weight, fromNode, toNode)
-		fromNode.Edges = append(fromNode.Edges, edge)
-		fromNode.Nexts = append(fromNode.Nexts, toNode)
-		graph.Edges[edge] = struct{}{}
-	}
-	return graph
 }
 
 // Dijkstra 算法实现 函数计算从起始结点到所有其他结点的最短路径
