@@ -63,9 +63,9 @@ func heapSort(arr []int) []int {
 	return arr
 }
 
-// 堆
+/*优先队列*/
 
-// PriorityQueue 定义一个类型，它实现了 heap.Interface 接口
+// PriorityQueue 优先队列 java/go底层就是小根堆
 type PriorityQueue []int
 
 func (pq *PriorityQueue) Len() int           { return len(*pq) }
@@ -94,7 +94,7 @@ func (pq *PriorityQueue) IsEmpty() bool {
 	return pq.Len() == 0
 }
 
-// 优先队列 java/go底层就是小根堆
+// sortedArrDistanceLessK 堆排扩展题目：几乎有序的数组(把数组排好序，每个元素移动的距离不超过K，K相较于数组较小，选择一个合适的算法排序)
 func sortedArrDistanceLessK(arr []int, k int) []int {
 	if arr == nil || len(arr) < 2 {
 		return arr
