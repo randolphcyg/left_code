@@ -36,7 +36,7 @@ func heapify(arr []int, index, heapSize int) {
 	}
 }
 
-// heapSort 堆排 O(N*logN) 空间O(1)
+// heapSort 堆排 不稳定 时O(N*logN) 空O(1)
 func heapSort(arr []int) []int {
 	if arr == nil || len(arr) < 2 {
 		return arr

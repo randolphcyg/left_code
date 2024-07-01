@@ -6,7 +6,7 @@ import (
 	"sort/helper"
 )
 
-// mergeSort 归并排序
+// mergeSort 归并排序 稳定 时O(N*logN) 空O(N)
 // T(N) = 2*T(N/2) + O(N)	Master公式：a=2 b=2 d=1	∵ log(b,a) = d ∴ O(N*logN)
 func mergeSort(arr []int) []int {
 	if arr == nil || len(arr) < 2 {
@@ -115,7 +115,7 @@ func mergeSmallSum(arr []int, l, m, r int) int {
 	return res
 }
 
-// 快排 O(N*logN)
+// 快排 不稳定 时O(N*logN) 空O(logN)
 func quickSort(arr []int) []int {
 	if arr == nil || len(arr) < 2 {
 		return arr

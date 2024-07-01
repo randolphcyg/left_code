@@ -7,7 +7,7 @@ import (
 	"sort/helper"
 )
 
-// selectionSort 选择排序
+// selectionSort 选择排序 不稳定 时O(N^2) 空O(1)
 func selectionSort(arr []int) []int {
 	if arr == nil || len(arr) < 2 {
 		return arr
@@ -27,7 +27,7 @@ func selectionSort(arr []int) []int {
 	return arr
 }
 
-// bubbleSort 冒泡排序
+// bubbleSort 冒泡排序 稳定 时O(N^2) 空O(1)
 func bubbleSort(arr []int) []int {
 	if arr == nil || len(arr) < 2 {
 		return arr
@@ -44,7 +44,7 @@ func bubbleSort(arr []int) []int {
 	return arr
 }
 
-// insertSort 插入排序
+// insertSort 插入排序 稳定 时O(N^2) 空O(1)
 func insertSort(arr []int) []int {
 	if arr == nil || len(arr) < 2 {
 		return arr

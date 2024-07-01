@@ -6,7 +6,7 @@ import (
 	"sort/helper"
 )
 
-// 基数排序
+// radixSort 基数排序 稳定 时O(m*(n+r)) 空O(n+r)
 func radixSort(arr []int) []int {
 	if arr == nil || len(arr) < 2 {
 		return arr
