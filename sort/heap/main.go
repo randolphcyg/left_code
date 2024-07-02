@@ -4,7 +4,7 @@ import (
 	"container/heap"
 	"fmt"
 
-	"sort/helper"
+	"left_code/sort/helper"
 )
 
 // 某个数现在处在index位置，往上继续移动

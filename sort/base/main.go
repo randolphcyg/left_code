@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math"
 
-	"sort/helper"
+	"left_code/sort/helper"
 )
 
 // selectionSort 选择排序 不稳定 时O(N^2) 空O(1)

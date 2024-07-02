@@ -3,7 +3,7 @@ package main
 import (
 	"math/rand"
 
-	"sort/helper"
+	"left_code/sort/helper"
 )
 
 // mergeSort 归并排序 稳定 时O(N*logN) 空O(N)
