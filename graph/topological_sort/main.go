@@ -124,18 +124,18 @@ func sortedTopology(graph *Graph) []*Node {
 	for _, node := range graph.Nodes {
 		inMap[node] = node.In
 		if node.In == 0 {
-			zeroInQueue.Push(node)
+			heap.Push(zeroInQueue, node)
 		}
 	}
 	// 拓扑排序的结果，依次加入result
 	var result []*Node
 	for !zeroInQueue.IsEmpty() {
-		cur := zeroInQueue.Pop().(*Node)
+		cur := heap.Pop(zeroInQueue).(*Node)
 		result = append(result, cur)
 		for _, next := range cur.Nexts {
 			inMap[next] = inMap[next] - 1
 			if inMap[next] == 0 {
-				zeroInQueue.Push(next)
+				heap.Push(zeroInQueue, next)
 			}
 		}
 	}

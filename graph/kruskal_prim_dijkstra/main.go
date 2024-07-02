@@ -164,11 +164,11 @@ func kruskal(graph *Graph) map[*Edge]struct{} {
 	mySets := NewMySets(nodes)
 	priorityQueue := NewPriorityQueue()
 	for edge, _ := range graph.Edges {
-		priorityQueue.Push(edge)
+		heap.Push(priorityQueue, edge)
 	}
 	result := make(map[*Edge]struct{})
 	for !priorityQueue.IsEmpty() {
-		edge := priorityQueue.Pop().(*Edge)
+		edge := heap.Pop(priorityQueue).(*Edge)
 		if !mySets.isSameSet(edge.From, edge.To) {
 			result[edge] = struct{}{}
 			mySets.union(edge.From, edge.To)
@@ -188,17 +188,17 @@ func prim(graph *Graph) map[*Edge]struct{} {
 		if _, ok := set[node]; !ok {
 			set[node] = struct{}{}
 			for _, edge := range node.Edges { // 由一个点，解锁所有相连的边
-				priorityQueue.Push(edge)
+				heap.Push(priorityQueue, edge)
 			}
 
 			for !priorityQueue.IsEmpty() {
-				edge := priorityQueue.Pop().(*Edge) // 弹出解锁的边中，最小的边
-				toNode := edge.To                   // 可能的一个新的点
-				if _, ok := set[toNode]; !ok {      //不含有的时候，就是新的点
+				edge := heap.Pop(priorityQueue).(*Edge) // 弹出解锁的边中，最小的边
+				toNode := edge.To                       // 可能的一个新的点
+				if _, ok := set[toNode]; !ok {          //不含有的时候，就是新的点
 					set[toNode] = struct{}{}
 					result[edge] = struct{}{}
 					for _, edge := range toNode.Edges {
-						priorityQueue.Push(edge)
+						heap.Push(priorityQueue, edge)
 					}
 				}
 			}

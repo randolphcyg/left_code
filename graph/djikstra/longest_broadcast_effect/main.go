@@ -114,10 +114,10 @@ func dijkstra(graph *Graph, start *Node) map[*Node]int {
 	distanceMap[start] = 0
 
 	pq := NewPriorityQueue()
-	pq.Push(NewEdge(0, start, start))
+	heap.Push(pq, NewEdge(0, start, start))
 
 	for !pq.IsEmpty() {
-		edge, _ := pq.Pop().(*Edge)
+		edge, _ := heap.Pop(pq).(*Edge)
 		node := edge.To
 		distance := edge.Weight
 
@@ -129,7 +129,7 @@ func dijkstra(graph *Graph, start *Node) map[*Node]int {
 			newDist := distance + e.Weight
 			if newDist < distanceMap[toNode] {
 				distanceMap[toNode] = newDist
-				pq.Push(NewEdge(newDist, node, toNode))
+				heap.Push(pq, NewEdge(newDist, node, toNode))
 			}
 		}
 	}
