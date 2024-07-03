@@ -1,9 +1,7 @@
 package main
 
 import (
-	"container/heap"
 	"fmt"
-	"math"
 )
 
 /*自定义图结构*/
@@ -84,168 +82,6 @@ func createGraph(matrix [][]int) *Graph {
 	return graph
 }
 
-/*优先队列*/
-
-// PriorityQueue 实现优先队列
-type PriorityQueue []*Edge
-
-func (pq *PriorityQueue) Len() int { return len(*pq) }
-
-func (pq *PriorityQueue) Less(i, j int) bool {
-	return (*pq)[i].Weight < (*pq)[j].Weight
-}
-
-func (pq *PriorityQueue) Swap(i, j int) {
-	(*pq)[i], (*pq)[j] = (*pq)[j], (*pq)[i]
-}
-
-func (pq *PriorityQueue) Push(x interface{}) {
-	*pq = append(*pq, x.(*Edge))
-}
-
-func (pq *PriorityQueue) Pop() interface{} {
-	old := *pq
-	n := len(old)
-	item := old[n-1]
-	*pq = old[0 : n-1]
-	return item
-}
-
-func NewPriorityQueue() *PriorityQueue {
-	pq := &PriorityQueue{}
-	heap.Init(pq)
-	return pq
-}
-
-func (pq *PriorityQueue) IsEmpty() bool {
-	return pq.Len() == 0
-}
-
-/*我的集合们*/
-
-// MySets 我的集合们
-type MySets struct {
-	setMap map[*Node][]*Node
-}
-
-func NewMySets(nodes []*Node) *MySets {
-	setMap := make(map[*Node][]*Node)
-	for _, cur := range nodes {
-		var set []*Node
-		set = append(set, cur)
-		setMap[cur] = set
-	}
-
-	return &MySets{setMap: setMap}
-}
-
-func (m *MySets) isSameSet(from, to *Node) bool {
-	fromSet := m.setMap[from]
-	toSet := m.setMap[to]
-	return fromSet[0] == toSet[0]
-}
-
-func (m *MySets) union(from, to *Node) {
-	fromSet := m.setMap[from]
-	toSet := m.setMap[to]
-
-	for _, toNode := range toSet {
-		fromSet = append(fromSet, toNode)
-		m.setMap[toNode] = fromSet
-	}
-}
-
-// kruskal 算法实现
-func kruskal(graph *Graph) map[*Edge]struct{} {
-	var nodes []*Node
-	for _, node := range graph.Nodes {
-		nodes = append(nodes, node)
-	}
-	mySets := NewMySets(nodes)
-	priorityQueue := NewPriorityQueue()
-	for edge, _ := range graph.Edges {
-		heap.Push(priorityQueue, edge)
-	}
-	result := make(map[*Edge]struct{})
-	for !priorityQueue.IsEmpty() {
-		edge := heap.Pop(priorityQueue).(*Edge)
-		if !mySets.isSameSet(edge.From, edge.To) {
-			result[edge] = struct{}{}
-			mySets.union(edge.From, edge.To)
-		}
-	}
-
-	return result
-}
-
-// prim 算法实现
-func prim(graph *Graph) map[*Edge]struct{} {
-	priorityQueue := NewPriorityQueue()
-	set := map[*Node]struct{}{}
-	result := map[*Edge]struct{}{} // 依次挑选的边在result里
-
-	for _, node := range graph.Nodes { // 随便挑选一个点
-		if _, ok := set[node]; !ok {
-			set[node] = struct{}{}
-			for _, edge := range node.Edges { // 由一个点，解锁所有相连的边
-				heap.Push(priorityQueue, edge)
-			}
-
-			for !priorityQueue.IsEmpty() {
-				edge := heap.Pop(priorityQueue).(*Edge) // 弹出解锁的边中，最小的边
-				toNode := edge.To                       // 可能的一个新的点
-				if _, ok := set[toNode]; !ok {          //不含有的时候，就是新的点
-					set[toNode] = struct{}{}
-					result[edge] = struct{}{}
-					for _, edge := range toNode.Edges {
-						heap.Push(priorityQueue, edge)
-					}
-				}
-			}
-		}
-	}
-
-	return result
-}
-
-// dijkstra 算法实现
-func dijkstra(head *Node) map[*Node]int {
-	// 从head出发到所有点的最小距离
-	// key：从head出发到达key
-	// value：从head出发到达key的最小距离
-	// 如果在表中，没有T的记录，含义是从head出发到T这个点的距离为正无穷
-	distanceMap := map[*Node]int{}
-	distanceMap[head] = 0
-	// 已经求过距离的节点，存在selectedNodes中，以后再也不碰
-	selectedNodes := map[*Node]struct{}{}
-	minNode := getMinDistanceAndUnselectedNode(distanceMap, selectedNodes)
-
-	for minNode != nil {
-		distance := distanceMap[minNode]
-		for _, edge := range minNode.Edges {
-			toNode := edge.To
-			if _, ok := distanceMap[toNode]; !ok {
-				distanceMap[toNode] = distance + edge.Weight
-			}
-			distanceMap[toNode] = int(math.Min(float64(distanceMap[toNode]), float64(distance+edge.Weight)))
-		}
-		selectedNodes[minNode] = struct{}{}
-		minNode = getMinDistanceAndUnselectedNode(distanceMap, selectedNodes)
-	}
-	return distanceMap
-}
-
-func getMinDistanceAndUnselectedNode(distanceMap map[*Node]int, touchedNodes map[*Node]struct{}) (minNode *Node) {
-	minDistance := math.MaxInt
-	for node, distance := range distanceMap {
-		if _, ok := touchedNodes[node]; !ok && distance < minDistance {
-			minNode = node
-			minDistance = distance
-		}
-	}
-	return minNode
-}
-
 func main() {
 	// 无向图
 	matrix := [][]int{
@@ -268,19 +104,48 @@ func main() {
 
 	fmt.Println("kruskal: ")
 	resKruskal := kruskal(graph)
+	/*
+		4 2 2
+		1 2 3
+		3 2 5
+	*/
 	for edge, _ := range resKruskal {
 		fmt.Println(edge.From.Val, edge.To.Val, edge.Weight)
 	}
 
 	fmt.Println("prim: ")
 	resPrim := prim(graph)
+	/*
+		4 2 2
+		2 1 3
+		2 3 5
+	*/
 	for edge, _ := range resPrim {
 		fmt.Println(edge.From.Val, edge.To.Val, edge.Weight)
 	}
 
 	fmt.Println("dijkstra: ")
-	resDjikstra := dijkstra(graph.Nodes[1])
-	for node, distance := range resDjikstra {
+	resDijkstra := dijkstra(graph.Nodes[1])
+	/*
+		4 5 节点1到节点4距离最短距离是5
+		1 0
+		2 3
+		3 8 节点1到节点3距离最短距离是8
+	*/
+	for node, distance := range resDijkstra {
+		fmt.Println(node.Val, distance)
+	}
+
+	// 运行dijkstra算法
+	fmt.Println("dijkstra2: ")
+	resDijkstra2 := dijkstra2(graph.Nodes[1], len(graph.Nodes))
+	/*
+		4 5
+		3 8
+		1 0
+		2 3
+	*/
+	for node, distance := range resDijkstra2 {
 		fmt.Println(node.Val, distance)
 	}
 }
