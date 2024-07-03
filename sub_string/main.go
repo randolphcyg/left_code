@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math"
 )
 
 // 无重复字符的最长子串
@@ -15,7 +14,7 @@ func LengthOfLongestSubstring(s string) int {
 		if k, ok := usedChar[v]; ok && left <= k {
 			left = k + 1
 		} else {
-			res = int(math.Max(float64(res), float64(i-left+1)))
+			res = max(res, i-left+1)
 		}
 
 		usedChar[v] = i

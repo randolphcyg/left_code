@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math"
 
 	"left_code/sort/helper"
 )
@@ -174,7 +173,7 @@ func process(arr []int, L int, R int) int {
 	mid := L + (R-L)>>1 // 中点 不会溢出且更快
 	leftMax := process(arr, L, mid)
 	rightMax := process(arr, mid+1, R)
-	return int(math.Max(float64(leftMax), float64(rightMax)))
+	return max(leftMax, rightMax)
 }
 
 func main() {

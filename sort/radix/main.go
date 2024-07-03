@@ -19,7 +19,7 @@ func radixSort(arr []int) []int {
 func maxbits(arr []int) int {
 	maxInt := math.MaxInt
 	for i := 0; i < len(arr); i++ {
-		maxInt = int(math.Max(float64(maxInt), float64(arr[i])))
+		maxInt = max(maxInt, arr[i])
 	}
 	res := 0
 	for maxInt != 0 {

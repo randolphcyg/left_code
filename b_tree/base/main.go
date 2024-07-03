@@ -206,7 +206,7 @@ func processBalancedTree(x *TreeNode) *returnDataBalancedTree {
 	leftData := processBalancedTree(x.Left)
 	rightData := processBalancedTree(x.Right)
 
-	height := int(math.Max(float64(leftData.Height), float64(rightData.Height))) + 1
+	height := max(leftData.Height, rightData.Height) + 1
 	isBalanced := leftData.IsBalanced && rightData.IsBalanced && math.Abs(float64(leftData.Height-rightData.Height)) < 2
 
 	return &returnDataBalancedTree{isBalanced, height}
@@ -232,12 +232,12 @@ func processBST(x *TreeNode) *returnDataBST {
 	minData := x.Val
 	maxData := x.Val
 	if leftData != nil {
-		minData = int(math.Min(float64(minData), float64(leftData.Min)))
-		maxData = int(math.Max(float64(maxData), float64(leftData.Max)))
+		minData = min(minData, leftData.Min)
+		maxData = max(maxData, leftData.Max)
 	}
 	if rightData != nil {
-		minData = int(math.Min(float64(minData), float64(rightData.Min)))
-		maxData = int(math.Max(float64(maxData), float64(rightData.Max)))
+		minData = min(minData, rightData.Min)
+		maxData = max(maxData, rightData.Max)
 	}
 
 	isBst := true
@@ -273,7 +273,7 @@ func processFT(x *TreeNode) *returnDataFT {
 	}
 	leftData := processFT(x.Left)
 	rightData := processFT(x.Right)
-	height := int(math.Max(float64(leftData.Height), float64(rightData.Height))) + 1
+	height := max(leftData.Height, rightData.Height) + 1
 	nodes := leftData.Nodes + rightData.Nodes + 1
 
 	return &returnDataFT{

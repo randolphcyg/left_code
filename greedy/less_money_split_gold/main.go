@@ -30,7 +30,7 @@ func process(arr []int, preCost int) int {
 		for j := i + 1; j < len(arr); j++ {
 			newArr := mergeTwoElements(arr, i, j)
 			curCost := preCost + arr[i] + arr[j]
-			minCost = int(math.Min(float64(minCost), float64(process(newArr, curCost))))
+			minCost = min(minCost, process(newArr, curCost))
 		}
 	}
 

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math"
 )
 
 // 寻找两个正序数组的中位数
@@ -97,7 +96,7 @@ func findMedianSortedArrays2(nums1 []int, nums2 []int) float64 {
 			} else if j == 0 {
 				maxOfLeft = float64(nums1[i-1])
 			} else {
-				maxOfLeft = math.Max(float64(nums1[i-1]), float64(nums2[j-1]))
+				maxOfLeft = float64(max(nums1[i-1], nums2[j-1]))
 			}
 
 			if (m+n)%2 == 1 {
@@ -109,7 +108,7 @@ func findMedianSortedArrays2(nums1 []int, nums2 []int) float64 {
 			} else if j == n {
 				minOfRight = float64(nums1[i])
 			} else {
-				minOfRight = math.Min(float64(nums1[i]), float64(nums2[j]))
+				minOfRight = float64(min(nums1[i], nums2[j]))
 			}
 
 			return (maxOfLeft + minOfRight) / 2
