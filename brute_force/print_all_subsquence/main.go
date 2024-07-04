@@ -16,43 +16,36 @@ func process1(chs []rune, i int) {
 		fmt.Println(string(chs))
 		return
 	}
-	process1(chs, i+1) // 要当前字符的路
+
+	// 要当前字符的路
+	process1(chs, i+1)
 	tmp := chs[i]
-	chs[i] = 0
-	process1(chs, i+1) // 不要当前字符的路
-	chs[i] = tmp
+	chs[i] = 0 // 将当前字符暂时设为0
+
+	// 不要当前字符的路
+	process1(chs, i+1)
+	chs[i] = tmp // 恢复当前字符，以便在其他递归路径中正确使用
 }
 
 func printAllSubsequence2(str string) {
 	chs := []rune(str)
-	process2(chs, 0, []rune{})
+	process2(chs, 0, make([]rune, 0, len(chs)))
 }
 
 // 当前来到i位置,要和不要，走两条路
 // res之前的选择，所形成的列表
 func process2(chs []rune, i int, res []rune) {
 	if i == len(chs) {
-		printList(res)
+		fmt.Println(string(res))
 		return
 	}
-	resKeep := copyList(res)
-	resKeep = append(resKeep, chs[i])
-	process2(chs, i+1, resKeep) // 要当前字符的路
-	resNoInclude := copyList(res)
-	process2(chs, i+1, resNoInclude) // 不要当前字符的路
-}
+	// 选择要当前字符的路径
+	res = append(res, chs[i])
+	process2(chs, i+1, res)
+	res = res[:len(res)-1] // 回溯
 
-func printList(res []rune) {
-	for _, ch := range res {
-		fmt.Print(string(ch))
-	}
-	fmt.Println()
-}
-
-func copyList(list []rune) []rune {
-	newList := make([]rune, len(list))
-	copy(newList, list)
-	return newList
+	// 选择不要当前字符的路径
+	process2(chs, i+1, res) // 不要当前字符的路
 }
 
 func main() {
