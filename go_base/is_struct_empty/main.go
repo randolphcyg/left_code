@@ -5,6 +5,16 @@ import (
 	"reflect"
 )
 
+/*
+判断结构体是否为空
+p1 == Person{}
+
+当结构体中有不可比较字段，只能用下面两种方法
+reflect.ValueOf
+reflect.DeepEqual(x).IsZero()
+当对象声明时候是个指针类型，应该先解引用
+*/
+
 type Person struct {
 	Name            string
 	Age             int
