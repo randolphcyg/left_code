@@ -48,14 +48,14 @@ func getAndRemoveLastElement(stack *Stack) int {
 }
 
 func main() {
-	test := &Stack{}
-	test.Push(1)
-	test.Push(2)
-	test.Push(3)
-	test.Push(4)
-	test.Push(5)
-	reverse(test)
-	for !test.IsEmpty() {
-		fmt.Println(test.Pop())
+	s1 := &Stack{}
+	s1.Push(1)
+	s1.Push(2)
+	s1.Push(3)
+	s1.Push(4)
+	s1.Push(5)
+	reverse(s1)
+	for !s1.IsEmpty() {
+		fmt.Println(s1.Pop())
 	}
 }
